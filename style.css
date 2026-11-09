@@ -1391,26 +1391,6 @@ body.mobile {
   }
 }
 
-/* SKY SURFER CONTENT EDITING v1 — multilingual-friendly sizing */
-#titleBar .sceneName {
-  font-size: clamp(14px, 2.2vw, 22px) !important;
-  unicode-bidi: plaintext;
-}
-/* Put the selected phone title-bar height on body.mobile so the title bar and
-   all three top controls can inherit the exact same vertical dimension. */
-body.mobile {
-  --ss-phone-title-min-height: 50px;
-  --ss-phone-title-height: 50px;
-}
-.mobile #titleBar {
-  height: var(--ss-phone-title-height) !important;
-}
-.mobile #titleBar .sceneName {
-  height: var(--ss-phone-title-height) !important;
-  min-height: var(--ss-phone-title-height) !important;
-  max-height: var(--ss-phone-title-height) !important;
-}
-
 /* Sky Surfer: Joyful Mysteries-style PHONE title wrapping.
    Desktop stays unchanged. Phone titles use the same readable behavior as the
    Joyful Mysteries project: one centered line when it fits, otherwise a centered
@@ -1606,30 +1586,27 @@ body {
 @supports (left: env(safe-area-inset-left)) {
   @media (orientation: landscape) and (pointer: coarse),
          (orientation: landscape) and (max-height: 500px) {
-    /* Keep the scene-menu control visually flush with the physical left edge.
-       The previous build moved the entire 50px button inward by the safe-area
-       inset, which left a conspicuous empty strip in landscape fullscreen.
-       Instead, extend the button through the safe area and inset only its icon. */
+    /* Annunciation-style scene-menu geometry: keep the control itself at the
+       normal 50px width. On a phone with a left cutout, move the whole control
+       into the safe content area instead of stretching its gray background
+       through the cutout. This keeps the header visually balanced. */
     .mobile #sceneListToggle {
-      left: 0 !important;
-      width: calc(50px + env(safe-area-inset-left)) !important;
-      min-width: calc(50px + env(safe-area-inset-left)) !important;
-      max-width: calc(50px + env(safe-area-inset-left)) !important;
-      padding-left: env(safe-area-inset-left) !important;
+      left: env(safe-area-inset-left) !important;
+      width: 50px !important;
+      min-width: 50px !important;
+      max-width: 50px !important;
+      padding-left: 0 !important;
       box-sizing: border-box !important;
     }
 
-    /* Classic Marzipano scene-menu artwork is an absolutely positioned .icon.
-       Keep the icon inside the usable 50px area to the right of the cutout. */
+    /* Keep both classic and modern scene-menu artwork centered inside the
+       normal 50px control after the safe-area offset is applied. */
     .mobile #sceneListToggle .icon {
       right: 10px !important;
     }
 
-    /* Modern/custom menu artwork is rendered with ::before. Position the
-       30px symbol inside the same safe 50px control area without shifting the
-       button/background itself away from the screen edge. */
     .mobile #sceneListToggle::before {
-      left: calc(env(safe-area-inset-left) + 10px) !important;
+      left: 10px !important;
       right: auto !important;
       width: 30px !important;
       height: 30px !important;
