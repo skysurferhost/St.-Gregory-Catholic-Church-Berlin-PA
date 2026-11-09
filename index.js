@@ -165,13 +165,19 @@
     }
 
     var cs = window.getComputedStyle(title);
-    var weight = ssNumericFontWeight(cs.fontWeight);
-    // Light 100–300 titles remain at the selected minimum. Each 50 points of
-    // weight above 300 adds roughly 1 px, capped at 12 px. This prevents a bold
-    // title from feeling vertically cramped even when it fits on one line.
-    var weightPad = Math.max(0, Math.min(12, Math.round((weight - 300) / 50)));
     var naturalHeight = ssMeasurePhoneTitle(title);
-    var desired = Math.max(minHeight + weightPad, naturalHeight + 8, minHeight);
+    var lineHeight = parseFloat(cs.lineHeight);
+    if (!isFinite(lineHeight)) lineHeight = (parseFloat(cs.fontSize) || 16) * 1.35;
+    var padTop = parseFloat(cs.paddingTop) || 0;
+    var padBottom = parseFloat(cs.paddingBottom) || 0;
+    var oneLineHeight = Math.ceil(lineHeight + padTop + padBottom + 2);
+    var wrapped = naturalHeight > oneLineHeight + 2;
+
+    // Match Annunciation geometry: font weight by itself must never make a
+    // one-line header taller. A 700-weight existing project title therefore
+    // stays at the same 50px minimum as a 300-weight title when both fit on
+    // one line. Grow only when the rendered text truly wraps.
+    var desired = wrapped ? Math.max(minHeight, naturalHeight + 2) : minHeight;
     desired = Math.max(minHeight, Math.min(100, Math.ceil(desired)));
     document.body.style.setProperty('--ss-phone-title-height', desired + 'px');
   }
